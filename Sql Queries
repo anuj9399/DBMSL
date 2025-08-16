@@ -1,0 +1,112 @@
+Q.1.Find the average marks of each student, along with name of Student.
+Query.SELECT s.Name, AVG(m.Marks) AS Avg_Marks
+      FROM Student s
+      JOIN Marks m ON s.RollNo = m.Roll_no
+      GROUP BY s.Name;
+Q2.(any five)
+Consider:
+pilot(pid, pname)
+flight(fid, ftype, capacity)
+route(pid, fid, from_city, to_city)
+Query.i) Flights having capacity more than 300
+      SELECT * FROM flight
+      WHERE capacity > 300;
+      ii) Flights between ‘Surat’ and ‘Mumbai’
+      SELECT * FROM flight f
+      JOIN route r ON f.fid = r.fid
+      WHERE r.from_city = 'Surat' AND r.to_city = 'Mumbai';
+      iii) Names of pilots who fly from ‘Pune’
+      SELECT DISTINCT p.pname
+      FROM pilot p
+      JOIN route r ON p.pid = r.pid
+      WHERE r.from_city = 'Pune';
+      iv) Route on which pilot ‘Mr Kapoor’ flies
+      SELECT r.*
+      FROM route r
+      JOIN pilot p ON r.pid = p.pid
+      WHERE p.pname = 'Mr Kapoor';
+      v) Pilots whose names start with ‘A’ but not end with ‘A’
+      SELECT * FROM pilot
+      WHERE pname LIKE 'A%' AND pname NOT LIKE '%A';
+Q.3Tables: Employee (Emp_no, Name, Emp_city)
+Company (Emp_no, Company_name, Salary)
+Query.i) Employee name and company name
+      SELECT e.Name, c.Company_name
+      FROM Employee e
+      JOIN Company c ON e.Emp_no = c.Emp_no;
+      ii) Employee name, city, company name, salary where salary > 10000
+      SELECT e.Name, e.Emp_city, c.Company_name, c.Salary
+      FROM Employee e
+      JOIN Company c ON e.Emp_no = c.Emp_no
+      WHERE c.Salary > 10000;
+      iii) All employees working in “XYZ company”
+      SELECT e.*
+      FROM Employee e
+      JOIN Company c ON e.Emp_no = c.Emp_no
+      WHERE c.Company_name = 'XYZ company';
+Q.4.(university schema)
+Query.a) Increase salary of each instructor in Comp. Sci. dept by 10%
+      UPDATE instructor
+      SET salary = salary * 1.10
+      WHERE dept_name = 'Comp. Sci.';
+      b) Delete all courses never offered
+      DELETE FROM course
+      WHERE course_id NOT IN (SELECT course_id FROM section);
+      c) Insert every student with tot_cred > 100 as instructor with salary 10000 in same dept
+      INSERT INTO instructor (ID, name, dept_name, salary)
+      SELECT ID, name, dept_name, 10000
+      FROM student
+      WHERE tot_cred > 100;
+Q.5.Relation: marks(ID, score)
+Query.a) Display grade for each student
+      SELECT ID,
+      CASE
+      WHEN score < 40 THEN 'F'
+      WHEN score < 60 THEN 'C'
+      WHEN score < 80 THEN 'B'
+      ELSE 'A'
+      END AS grade
+      FROM marks;
+      b) Number of students with each grade
+      SELECT grade, COUNT(*) AS num_students
+      FROM (
+      SELECT CASE
+      WHEN score < 40 THEN 'F'
+      WHEN score < 60 THEN 'C'
+      WHEN score < 80 THEN 'B'
+      ELSE 'A'
+      END AS grade
+      FROM marks
+      ) AS grades
+      GROUP BY grade;\
+Q.6.Employee (Empno, Ename, DeptNo, Salary)
+Department(DeptNo, Dname)
+Query.i) Employee names of Computer Department
+      SELECT e.Ename
+      FROM Employee e
+      JOIN Department d ON e.DeptNo = d.DeptNo
+      WHERE d.Dname = 'Computer';
+      ii) Average salary of each department
+      SELECT d.Dname, AVG(e.Salary) AS Avg_Salary
+      FROM Employee e
+      JOIN Department d ON e.DeptNo = d.DeptNo
+      GROUP BY d.Dname;
+      iii) Department name of employee named 'Amit'
+      SELECT d.Dname
+      FROM Employee e
+      JOIN Department d ON e.DeptNo = d.DeptNo
+      WHERE e.Ename = 'Amit';
+Q.7.Cricket_play(p_id, Name, Address)
+Matches(Match_code, match_date, match_place)
+Score(p_id, match_code, score)
+Query.i) Player name, match date, place, and score of each player
+      SELECT cp.Name, m.match_date, m.match_place, s.score
+      FROM Cricket_play cp
+      JOIN Score s ON cp.p_id = s.p_id
+      JOIN Matches m ON s.match_code = m.match_code;
+      ii) Players whose maximum score is higher than 50
+      SELECT cp.Name
+      FROM Cricket_play cp
+      JOIN Score s ON cp.p_id = s.p_id
+      GROUP BY cp.Name
+      HAVING MAX(s.score) > 50;
